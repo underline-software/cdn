@@ -1,4 +1,4 @@
-const securityssologinusach=(function(){
+(function(){
 	var token = "";
 	var refreshToken = "";
 	const URL_AUTHORIZATION = "https://api.dti.usach.cl/api/3B4D/login";
