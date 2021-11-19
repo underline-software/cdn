@@ -38,7 +38,7 @@ var UsachDTISecured =UsachDTISecured||(function(){
 			token = getCookie(NAME_TOKEN_COOKIE);
 			if(token.length > 5){
 			const jsonResponse = await request(`${URL_AUTHORIZATION}/authorization`);
-				if(jsonResponse === "Autorizado"){
+				if(jsonResponse.status === "OK"){
 					return 1;
 				}
 			}
