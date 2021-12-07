@@ -48,7 +48,7 @@ const securityssologinusach=(function(){
 			token = getCookie(NAME_REFRESHTOKEN_COOKIE);
 			const jsonResponse = await request(`${URL_AUTHORIZATION}/refresh-token`);
 			console.log(jsonResponse);
-			if(jsonResponse.status === "OK"){
+			if(jsonResponse.token && jsonResponse.refreshToken){
 				document.cookie = `token=${jsonResponse.token};max-age=604800;`;
 				document.cookie = `refreshToken=${jsonResponse.refreshToken};max-age=604800;`;
 				return 1;
