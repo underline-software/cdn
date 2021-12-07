@@ -48,8 +48,20 @@ var UsachDTISecured =UsachDTISecured||(function(){
 			token = getCookie(NAME_REFRESHTOKEN_COOKIE);
 			const jsonResponse = await request(`${URL_AUTHORIZATION}/refresh-token`);
 			console.log(jsonResponse);
-			document.cookie = `token=${jsonResponse.token};max-age=604800;`;
-			document.cookie = `refreshToken=${jsonResponse.refreshToken};max-age=604800;`;
+			if(jsonResponse.status === "OK"){
+				document.cookie = `token=${jsonResponse.token};max-age=604800;`;
+				document.cookie = `refreshToken=${jsonResponse.refreshToken};max-age=604800;`;
+				return 1;
+			}
+			else {
+				return 0;
+			}
+		}
+		async function requestRoles(appCode) {
+			token = getCookie(NAME_TOKEN_COOKIE);
+			const jsonResponse = await request(`${URL_AUTHORIZATION}/roles/${appCode}`);
+			//Si da error se debe botar de la app, sino debe tener al menos un elemento en el arreglo.
+			return jsonResponse;
 		}
 
 		async function isAuthorized(){
@@ -58,9 +70,13 @@ var UsachDTISecured =UsachDTISecured||(function(){
 		async function newToken(){
 			return await requestNewToken();
 		}
+		async function getRoles(appCode) {
+			return await requestRoles(appCode);
+		}
 
-		return{
+		return {
 			isAuthorized: isAuthorized,
-			newToken: newToken
+			newToken: newToken,
+			getRoles: getRoles
 		};
 })();
