@@ -21,23 +21,35 @@ var UsachDTISecured =UsachDTISecured||(function(){
 			  return "";
 		}
 		async function request(url = '') {
-		  const response = await fetch(url, {
-		    method: 'GET',
-		    mode: 'cors',
-		    cache: 'no-cache',
-		    credentials: 'same-origin',
-		    headers: {
-		      'Content-Type': 'application/json',
-		      'Authorization': "Bearer " + token
-		    },
-		    redirect: 'follow',
-		    referrerPolicy: 'no-referrer'
-		  });
-		  const responseJson = await response.json();
-		  return {
-				status: response.status,
-				data: responseJson
-			};
+			var status = 0;
+			try {
+				const response = await fetch(url, {
+					method: 'GET',
+					mode: 'cors',
+					cache: 'no-cache',
+					credentials: 'same-origin',
+					headers: {
+						'Content-Type': 'application/json',
+						'Authorization': "Bearer " + token
+					},
+					redirect: 'follow',
+					referrerPolicy: 'no-referrer'
+				});
+				status = response.status;
+				const responseJson = await response.json();
+				return {
+					status: response.status,
+					data: responseJson
+				};
+
+			} catch (e) {
+				console.log(e);
+				return {
+					status: status,
+					data: {}
+				};
+			}
+			// console.log(responseJson);
 		}
 		async function checkAuthorized(){
 			token = getCookie(NAME_TOKEN_COOKIE);
@@ -52,9 +64,9 @@ var UsachDTISecured =UsachDTISecured||(function(){
 		async function requestNewToken() {
 			token = getCookie(NAME_REFRESHTOKEN_COOKIE);
 			const jsonResponse = await request(`${BASEURL_AUTHORIZATION}${URL_LOGIN}/refresh-token`);
-			if(jsonResponse.data.token && jsonResponse.data.refreshToken){
-				document.cookie = `token=${jsonResponse.token};max-age=604800;`;
-				document.cookie = `refreshToken=${jsonResponse.refreshToken};max-age=604800;`;
+			if(jsonResponse.data?.token && jsonResponse.data?.refreshToken){
+				document.cookie = `token=${jsonResponse.data.token};max-age=604800;`;
+				document.cookie = `refreshToken=${jsonResponse.data.refreshToken};max-age=604800;`;
 				return 1;
 			}
 			else {
@@ -64,17 +76,10 @@ var UsachDTISecured =UsachDTISecured||(function(){
 		async function requestRoles(appCode) {
 			token = getCookie(NAME_TOKEN_COOKIE);
 			const jsonResponse = await request(`${BASEURL_AUTHORIZATION}${URL_ROLES}/app/${appCode}`);
-			console.log(jsonResponse);
 			if (jsonResponse.status === 200) {
 				return jsonResponse.data;
 			}
 			return [];
-			// try {
-			// 	//Si da error se debe botar de la app, sino debe tener al menos un elemento en el arreglo.
-			// } catch (e) {
-			// 	console.log(e);
-			// 	return [];
-			// }
 		}
 
 		async function isAuthorized(){
