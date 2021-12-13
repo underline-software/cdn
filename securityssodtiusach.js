@@ -44,6 +44,7 @@ const securityssologinusach=(function(){
 
 			} catch (e) {
 				console.log(e);
+				console.log(status);
 				return {
 					status: status,
 					data: {}
@@ -78,15 +79,12 @@ const securityssologinusach=(function(){
 			const jsonResponse = await request(`${BASEURL_AUTHORIZATION}${URL_ROLES}/app/${appCode}`);
 			if (jsonResponse.status === 200) {
 				//Invitado: ['guest']
-				console.log('200');
 				return jsonResponse.data;
 			}
 			else if (jsonResponse.status === 401) {
-				console.log('401');
 				window.location.href = `http://localhost:3000?redirect_url=${location}`;
 			}
 			else {
-				console.log('c fue');
 				window.location.href = `http://localhost:3000`;
 			}
 		}
