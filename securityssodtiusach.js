@@ -73,13 +73,22 @@ const securityssologinusach=(function(){
 				return 0;
 			}
 		}
-		async function requestRoles(appCode) {
+		async function requestRoles(appCode, location) {
 			token = getCookie(NAME_TOKEN_COOKIE);
 			const jsonResponse = await request(`${BASEURL_AUTHORIZATION}${URL_ROLES}/app/${appCode}`);
 			if (jsonResponse.status === 200) {
+				//Invitado: ['guest']
+				console.log('200');
 				return jsonResponse.data;
 			}
-			return [];
+			else if (jsonResponse.status === 401) {
+				console.log('401');
+				window.location.href = `http://localhost:3000?redirect_url=${location}`;
+			}
+			else {
+				console.log('c fue');
+				window.location.href = `http://localhost:3000`;
+			}
 		}
 
 		async function isAuthorized(){
@@ -89,7 +98,7 @@ const securityssologinusach=(function(){
 			return await requestNewToken();
 		}
 		async function getRoles(appCode) {
-			return await requestRoles(appCode);
+			return await requestRoles(appCode, location);
 		}
 
 		return {
