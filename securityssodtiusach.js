@@ -44,6 +44,7 @@ var UsachDTISecured =UsachDTISecured||(function(){
 
 			} catch (e) {
 				console.log(e);
+				console.log(status);
 				return {
 					status: status,
 					data: {}
@@ -73,13 +74,19 @@ var UsachDTISecured =UsachDTISecured||(function(){
 				return 0;
 			}
 		}
-		async function requestRoles(appCode) {
+		async function requestRoles(appCode, location) {
 			token = getCookie(NAME_TOKEN_COOKIE);
 			const jsonResponse = await request(`${BASEURL_AUTHORIZATION}${URL_ROLES}/app/${appCode}`);
 			if (jsonResponse.status === 200) {
+				//Invitado: ['guest']
 				return jsonResponse.data;
 			}
-			return [];
+			else if (jsonResponse.status === 401) {
+				window.location.href = `http://localhost:3000?redirect_url=${location}`;
+			}
+			else {
+				window.location.href = `http://localhost:3000`;
+			}
 		}
 
 		async function isAuthorized(){
@@ -89,7 +96,7 @@ var UsachDTISecured =UsachDTISecured||(function(){
 			return await requestNewToken();
 		}
 		async function getRoles(appCode) {
-			return await requestRoles(appCode);
+			return await requestRoles(appCode, location);
 		}
 
 		return {
