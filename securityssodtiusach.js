@@ -82,10 +82,10 @@ const securityssologinusach=(function(){
 				return jsonResponse.data;
 			}
 			else if (jsonResponse.status === 401) {
-				window.location.href = `http://localhost:3000?redirect_url=${location}`;
+				window.location.href = `https://sso.dti.usach.cl?redirect_url=${location}`;
 			}
 			else {
-				window.location.href = `http://localhost:3000`;
+				window.location.href = `https://sso.dti.usach.cl`;
 			}
 		}
 
