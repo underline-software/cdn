@@ -68,8 +68,8 @@ var UsachDTISecured =UsachDTISecured||(function(){
 			token = getCookie(NAME_REFRESHTOKEN_COOKIE);
 			const jsonResponse = await request(`${BASEURL_AUTHORIZATION}${URL_LOGIN}/refresh-token`);
 			if(jsonResponse.data?.token && jsonResponse.data?.refreshToken){
-				document.cookie = `token=${jsonResponse.data.token};max-age=604800;path=/;Domain=usach.cl`;
-				document.cookie = `refreshToken=${jsonResponse.data.refreshToken};max-age=604800;path=/;Domain=usach.cl`;
+				document.cookie = `token=${jsonResponse.data.token};max-age=604800;Domain=usach.cl;path=/;`;
+				document.cookie = `refreshToken=${jsonResponse.data.refreshToken};max-age=604800;Domain=usach.cl;path=/`;
 				return 1;
 			}
 			else {
