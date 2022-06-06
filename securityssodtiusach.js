@@ -1,9 +1,11 @@
-const securityssologinusach=(function(){
+var UsachDTISecured =UsachDTISecured||(function(){
 	var token = "";
 	var refreshToken = "";
+	// const BASEURL_AUTHORIZATION = "http://190.215.4.123:8089/api";
+	const SSO_URL = "https://sso.dti.usach.cl";
 	const BASEURL_AUTHORIZATION = "https://api.dti.usach.cl/api";
 	const URL_LOGIN = "/3B4D/login";
-	const URL_ROLES = "/8K5D/roles-profile"
+	const URL_ROLES = "/3B4D/profile"
 	const NAME_TOKEN_COOKIE = "token";
 	const NAME_REFRESHTOKEN_COOKIE = "refreshToken";
 		function getCookie(cname){
@@ -66,8 +68,8 @@ const securityssologinusach=(function(){
 			token = getCookie(NAME_REFRESHTOKEN_COOKIE);
 			const jsonResponse = await request(`${BASEURL_AUTHORIZATION}${URL_LOGIN}/refresh-token`);
 			if(jsonResponse.data?.token && jsonResponse.data?.refreshToken){
-				document.cookie = `token=${jsonResponse.data.token};max-age=604800;`;
-				document.cookie = `refreshToken=${jsonResponse.data.refreshToken};max-age=604800;`;
+				document.cookie = `token=${jsonResponse.data.token};max-age=604800;path=/`;
+				document.cookie = `refreshToken=${jsonResponse.data.refreshToken};max-age=604800;path=/`;
 				return 1;
 			}
 			else {
@@ -76,16 +78,23 @@ const securityssologinusach=(function(){
 		}
 		async function requestRoles(appCode, location) {
 			token = getCookie(NAME_TOKEN_COOKIE);
-			const jsonResponse = await request(`${BASEURL_AUTHORIZATION}${URL_ROLES}/app/${appCode}`);
-			if (jsonResponse.status === 200) {
+			const jsonResponse = await request(`${BASEURL_AUTHORIZATION}${URL_ROLES}/apps/${appCode}/roles/permisos`);
+			if (jsonResponse.status === 200 && jsonResponse.data.length > 0) {
 				//Invitado: ['guest']
 				return jsonResponse.data;
 			}
 			else if (jsonResponse.status === 401) {
-				window.location.href = `http://localhost:3000?redirect_url=${location}`;
+				const gotNewToken = await requestNewToken();
+				if (gotNewToken) {
+					return jsonResponse.data;
+				}
+				else {
+					// window.location.replace(`http://localhost:3000?redirect_url=${location}`);
+					window.location.replace(`${SSO_URL}?redirect_url=${location}`);
+				}
 			}
 			else {
-				window.location.href = `http://localhost:3000`;
+				window.location.replace(`${SSO_URL}`);
 			}
 		}
 
@@ -95,7 +104,7 @@ const securityssologinusach=(function(){
 		async function newToken(){
 			return await requestNewToken();
 		}
-		async function getRoles(appCode) {
+		async function getRoles(appCode, location) {
 			return await requestRoles(appCode, location);
 		}
 
