@@ -1,11 +1,10 @@
 var UsachDTISecured =UsachDTISecured||(function(){
 	var token = "";
 	var refreshToken = "";
-	// const BASEURL_AUTHORIZATION = "http://190.215.4.123:8089/api";
 	const SSO_URL = "https://sso.dti.usach.cl";
 	const BASEURL_AUTHORIZATION = "https://api.dti.usach.cl/api";
 	const URL_LOGIN = "/3B4D/login";
-	const URL_ROLES = "/3B4D/profile"
+	const URL_ROLES = "/3B4D/profile";
 	const NAME_TOKEN_COOKIE = "token";
 	const NAME_REFRESHTOKEN_COOKIE = "refreshToken";
 		function getCookie(cname){
@@ -107,7 +106,6 @@ var UsachDTISecured =UsachDTISecured||(function(){
 		async function getRoles(appCode, location) {
 			return await requestRoles(appCode, location);
 		}
-
 		return {
 			isAuthorized: isAuthorized,
 			newToken: newToken,
