@@ -1,7 +1,5 @@
 var UsachDTISecured =UsachDTISecured||(function(){
 	var token = "";
-	var refreshToken = "";
-	// const BASEURL_AUTHORIZATION = "http://190.215.4.123:8089/api";
 	const SSO_URL = "https://sso.dti.usach.cl";
 	const BASEURL_AUTHORIZATION = "https://api.dti.usach.cl/api";
 	const URL_LOGIN = "/3B4D/login";
@@ -38,10 +36,16 @@ var UsachDTISecured =UsachDTISecured||(function(){
 					referrerPolicy: 'no-referrer'
 				});
 				status = response.status;
-				const responseJson = await response.json();
+				if(response.type !== 'cors') {
+					const responseJson = await response.json();
+					return {
+						status: response.status,
+						data: responseJson
+					};
+				}
 				return {
-					status: response.status,
-					data: responseJson
+					status: status,
+					data: {}
 				};
 
 			} catch (e) {
@@ -89,7 +93,6 @@ var UsachDTISecured =UsachDTISecured||(function(){
 					return jsonResponse.data;
 				}
 				else {
-					// window.location.replace(`http://localhost:3000?redirect_url=${location}`);
 					window.location.replace(`${SSO_URL}?redirect_url=${location}`);
 				}
 			}
